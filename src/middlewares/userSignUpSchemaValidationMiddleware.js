@@ -1,6 +1,7 @@
 import userSignUpSchema from "../schemas/userSignUpSchema.js";
+import db from "../db/db.js";
 
-function userSignUpSchemaValidationMiddleware(req, res, next) {
+async function userSignUpSchemaValidationMiddleware(req, res, next) {
   const validation = userSignUpSchema.validate(req.body);
 
   if (validation.error) {
@@ -8,6 +9,13 @@ function userSignUpSchemaValidationMiddleware(req, res, next) {
   }
   if (req.body.password !== req.body.confirmPassword) {
     return res.status(422).send("Senhas diferentes.");
+  }
+  const emailExiste = await db
+    .collection("users")
+    .findOne({ email: req.body.email });
+
+  if (emailExiste) {
+    return res.status(409).send("E-mail já utilizado");
   }
 
   return next();

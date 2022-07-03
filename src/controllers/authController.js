@@ -30,7 +30,7 @@ export async function signIn(req, res) {
       .collection("sessions")
       .insertOne({ token, lastStatus: Date.now(), userId: user._id });
 
-    return res.status(200).send({ token });
+    return res.status(200).send({ name: user.name, email, token });
   }
 
   return res.status(401).send("Senha ou email incorretos!");
