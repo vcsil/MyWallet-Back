@@ -33,25 +33,21 @@ export async function postMovimentacao(req, res) {
       .findOne({ userId: id });
 
     if (usuarioComMovimentacao) {
-      await db
-        .collection("movimentacao")
-        .updateOne(
-          { userId: id },
-          {
-            $push: { movimentacao: newMovimentacao },
-            $inc: { saldo: atualizaSaldo },
-          }
-        );
+      await db.collection("movimentacao").updateOne(
+        { userId: id },
+        {
+          $push: { movimentacao: newMovimentacao },
+          $inc: { saldo: atualizaSaldo },
+        }
+      );
       return res.status(200).send("Movimentação adicionada.");
     }
 
-    await db
-      .collection("movimentacao")
-      .insertOne({
-        userId: id,
-        saldo: atualizaSaldo,
-        movimentacao: [newMovimentacao],
-      });
+    await db.collection("movimentacao").insertOne({
+      userId: id,
+      saldo: atualizaSaldo,
+      movimentacao: [newMovimentacao],
+    });
 
     return res.status(200).send("Movimentações iniciadas.");
   } catch (err) {
@@ -68,7 +64,7 @@ export async function getMovimentacao(req, res) {
       .findOne({ userId: id });
 
     if (todasMovimentcao) {
-      return res.status(200).send(todasMovimentcao.movimentacao);
+      return res.status(200).send(todasMovimentcao);
     }
 
     return res.status(200).send([]);
